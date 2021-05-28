@@ -12,7 +12,7 @@ def clean_readings(file):
     test_text = list(map(int, test_text))
     return test_text
 
-def append_to_csv(filename, starting_sep = "Error", increment = 50, files = ["screenlog.0"]):
+def append_to_csv(filename, starting_sep = "Error", increment = 10, files = ["screenlog.0"]):
     data = acquire_existing_data(filename)
     if len(data) != 0:
         prev_sep = float(data[-1][0])
@@ -34,5 +34,5 @@ def acquire_existing_data(filename):
         data = []
     return data
 
-append_to_csv("area3.csv", 2800)
+append_to_csv("csv_files/closer_area.csv", 30000)
 os.remove("screenlog.0")
