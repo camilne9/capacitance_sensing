@@ -7,12 +7,21 @@ import math
 def clean_readings(file):
     test_text = str(open(file, "r").read())
     test_text = test_text.replace("\n", "").replace("c", "").split("!")
-    if test_text[-1] == '':
-        test_text = test_text[:-1]
+    test_text = remove_extra_commands(test_text)
+    # if test_text[-1] == '':
+    #     test_text = test_text[:-1]
     test_text = list(map(int, test_text))
     return test_text
 
-def append_to_csv(filename, starting_sep = "Error", increment = 10, files = ["screenlog.0"]):
+def remove_extra_commands(text):
+    new_text = []
+    for element in text:
+        if element.isdigit():
+            new_text.append(element)
+    return new_text
+
+
+def append_to_csv(filename, starting_sep = "Error", increment = -100, files = ["screenlog.0"]):
     data = acquire_existing_data(filename)
     if len(data) != 0:
         prev_sep = float(data[-1][0])
@@ -34,5 +43,5 @@ def acquire_existing_data(filename):
         data = []
     return data
 
-append_to_csv("csv_files/closer_area.csv", 30000)
+append_to_csv("csv_files/single-ended_area_6-8.csv", 0)
 os.remove("screenlog.0")
