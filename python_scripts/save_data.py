@@ -21,16 +21,21 @@ def remove_extra_commands(text):
     return new_text
 
 
-def append_to_csv(filename, starting_sep = "Error", increment = -100, files = ["screenlog.0"]):
+def append_to_csv(filename, starting_sep = "Error", increment = -20, files = ["screenlog.0"], toggle = False):
     data = acquire_existing_data(filename)
     if len(data) != 0:
         prev_sep = float(data[-1][0])
+        prev_batch = float(data[-1][2])
     else:
         prev_sep = starting_sep+increment
+        prev_batch = 0
     for file in files:
         saved_data = clean_readings(file)
         for datapoint in saved_data:
-            data.append([prev_sep-increment, datapoint])
+            if toggle:
+                data.append([toggle*((prev_batch)%2), datapoint, prev_batch+1])
+            else:
+                data.append([prev_sep-increment, datapoint, prev_batch+1])
     data_array = np.asarray(data)
     np.savetxt(filename, data_array, delimiter=",", fmt='%s')
     return data_array
@@ -43,5 +48,5 @@ def acquire_existing_data(filename):
         data = []
     return data
 
-append_to_csv("csv_files/single-ended_area_6-8.csv", 0)
+append_to_csv("csv_files/drift_correction1_6-11.csv", 0)
 os.remove("screenlog.0")
