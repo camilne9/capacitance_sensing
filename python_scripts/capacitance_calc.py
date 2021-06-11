@@ -43,9 +43,11 @@ def convert_to_microns(input_unit):
     micron_factors = [10**(3), 1, 10**(6), 0.0254*10**(6)] #these conversion factors convert to m
     return micron_factors[unit.index(input_unit)]
 
-# print(avg_cap(clean_readings()))
-# print(statistics.pstdev(clean_readings()))
-print(f"diff, area: {theoretical_slope(15, 100)}")
-print(f"sing, area: {theoretical_slope(15, 200)}")
-print(f"diff, sep: {theoretical_slope(15, 150, 15)}")
-print(f"sing, sep: {theoretical_slope(15, 150, 10)}")
+print(avg_cap(clean_readings()))
+print(statistics.pstdev(clean_readings())/1000)
+# print(f"diff, area: {theoretical_slope(15, 100)}")
+# print(f"sing, area: {theoretical_slope(15, 200)}")
+# print(f"diff, sep: {theoretical_slope(15, 150, 15)}")
+# print(f"sing, sep: {theoretical_slope(15, 150, 10)}")
+
+print(f"slope: {theoretical_slope(16, 1000)}")

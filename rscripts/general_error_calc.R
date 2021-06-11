@@ -4,11 +4,11 @@ library(ggthemes)
 setwd("~/hoffman/capacitance/capacitance_sensing/rscripts")
 
 # I read in the data
-general_error <- read_csv("../csv_files/differential_mode3.csv", 
-                          col_names = c("distance", "capacitance"))
+general_error <- read_csv("../csv_files/drift_test1_6-11.csv", 
+                          col_names = c("distance", "capacitance", "batch"))
                           
 general_error <- general_error %>% 
-  mutate(distance = distance+1) %>% 
+  mutate(distance = distance) %>% 
   group_by(distance) %>%
   summarize(avg_cap = mean(capacitance)/(10^6), count = n()) %>%
   filter(count>1) %>% 
