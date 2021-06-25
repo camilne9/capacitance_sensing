@@ -4,8 +4,7 @@ library(ggthemes)
 setwd("~/hoffman/capacitance/capacitance_sensing/rscripts")
 
 # I read in the data
-general_error <- read_csv("../csv_files/drift_test1_6-11.csv", 
-                          col_names = c("distance", "capacitance", "batch"))
+general_error <- read_csv("../csv_files/capacitance-micrometer.csv")
                           
 general_error <- general_error %>% 
   mutate(distance = distance) %>% 
