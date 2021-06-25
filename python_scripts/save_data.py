@@ -21,24 +21,33 @@ def remove_extra_commands(text):
     return new_text
 
 
-def append_to_csv(filename, starting_sep = "Error", increment = -20, files = ["screenlog.0"], toggle = False):
+def append_to_csv(filename, starting_sep = "Error", increment = -20, files = ["screenlog.0"], toggle = False, offset = 128):
     data = acquire_existing_data(filename)
     if len(data) != 0:
         prev_sep = float(data[-1][0])
         prev_batch = float(data[-1][2])
+        prev_offset = 127+ prev_batch
     else:
         prev_sep = starting_sep+increment
         prev_batch = 0
+        prev_offset = 127
     for file in files:
         saved_data = clean_readings(file)
         for datapoint in saved_data:
+            cap = convert_to_cap(datapoint, offset)
             if toggle:
-                data.append([toggle*((prev_batch)%2), datapoint, prev_batch+1])
+                data.append([toggle*((prev_batch)%2), datapoint, prev_batch+1, cap])
             else:
-                data.append([prev_sep-increment, datapoint, prev_batch+1])
+                data.append([prev_sep-increment, datapoint, prev_batch+1, cap])
     data_array = np.asarray(data)
     np.savetxt(filename, data_array, delimiter=",", fmt='%s')
     return data_array
+
+def convert_to_cap(datapoint, offset):
+    datapoint = (datapoint)*(4.8828125e-7) - 4.096 + (offset - 128)*(.148)
+    # (.3013)
+    # (.1328125)
+    return datapoint
 
 def acquire_existing_data(filename):
     if path.exists(filename):
@@ -48,5 +57,5 @@ def acquire_existing_data(filename):
         data = []
     return data
 
-append_to_csv("csv_files/drift_correction1_6-11.csv", 0)
+append_to_csv("csv_files/6-23_drift1_se.csv", 0, increment = -20, offset = 128)
 os.remove("screenlog.0")
