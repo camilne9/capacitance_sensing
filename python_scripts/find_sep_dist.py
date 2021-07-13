@@ -34,7 +34,7 @@ def avg_data(data_array):
 
 
 def cap_formula(params):
-    # print(params)
+    print(params)
     zero_voltage = []
     for row in data:
         if row[1] == 0:

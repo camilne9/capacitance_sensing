@@ -14,8 +14,8 @@ volt = serial.Serial("/dev/tty.usbmodem14101" , 9600)
 # Tunable constants
 readings_per_batch = 100
 max_voltage = 175
-trials = 15
-wait_time = 5
+trials = 20
+wait_time = .5
 offset = 128
 voltages = [0, 25, 50, 75, 100, 125, 150, 175,
             150, 125, 100, 75, 50, 25]
@@ -27,7 +27,7 @@ voltages = [0, 25, 50, 75, 100, 125, 150, 175,
 # data_array = ["batch", "voltage", "time", "raw", "capacitance"]
 data_array = []
 
-def collect_data(readings_per_batch, max_voltage, trials, wait_time, offset, voltages = False):
+def collect_data(readings_per_batch, max_voltage, trials, wait_time, pause = False, offset, voltages = False):
     if voltages:
         trials = len(voltages)
     for trial in range(trials):
@@ -37,6 +37,8 @@ def collect_data(readings_per_batch, max_voltage, trials, wait_time, offset, vol
                 print("zero volts")
                 voltage = 0
                 volt.write(b"V%d;"%voltage)
+                if
+                input("Press 'enter' when you're ready to proceed")
             else:
                 print("max voltage")
                 voltage = max_voltage
@@ -47,7 +49,7 @@ def collect_data(readings_per_batch, max_voltage, trials, wait_time, offset, vol
             volt.write(b"V%d;"%voltage)
 
         print("going to sleep")
-        time.sleep(1)
+        time.sleep(wait_time)
         print("waking up")
 
         for interation in range(readings_per_batch):
@@ -55,7 +57,7 @@ def collect_data(readings_per_batch, max_voltage, trials, wait_time, offset, vol
             val = cap.readline()
             raw = clean_val(val)
             capacitance = convert_to_cap(raw, offset)
-            data_array.append([trial, voltage, (trial)*wait_time, raw, capacitance])
+            data_array.append([trial, voltage, time.time() - absolute_timestamp, raw, capacitance])
     return data_array
 
 def clean_val(val):
@@ -82,6 +84,10 @@ def save_to_csv(data, filename):
     np.savetxt(filename, data_array, delimiter=",", fmt='%s')
     return
 
+def create_absolute_timestamp():
+    global absolute_timestamp
+    absolute_timestamp = time.time()
+
 def main(filename, readings_per_batch, max_voltage, trials, wait_time, offset, voltages = False):
     if path.exists(filename):
         proceed = input("file exist, are you sure you want to overwrite? (y/n): ")
@@ -95,10 +101,11 @@ def main(filename, readings_per_batch, max_voltage, trials, wait_time, offset, v
     cap.write(b"D%d;\n"%offset)
     cap.readline()
     volt.write(b"O;")
+    create_absolute_timestamp()
     save_to_csv(collect_data(readings_per_batch, max_voltage, trials, wait_time, offset, voltages), filename)
     volt.write(b"V0;")
     volt.write(b"F;")
     return
 
-filename = "csv_files/7-09_thor8_se.csv"
-main(filename, readings_per_batch, max_voltage, trials, wait_time, 255, voltages)
+filename = "csv_files/7-12_5m9.csv"
+main(filename, readings_per_batch, max_voltage, trials, wait_time, 215)

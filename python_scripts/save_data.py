@@ -57,5 +57,5 @@ def acquire_existing_data(filename):
         data = []
     return data
 
-append_to_csv("csv_files/7-08_thor6_se.csv", 0, increment = -20, offset = 128)
+append_to_csv("csv_files/7-09_control1_se.csv", 0, increment = -20, offset = 128)
 os.remove("screenlog.0")
