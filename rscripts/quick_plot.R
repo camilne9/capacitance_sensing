@@ -3,14 +3,16 @@ library(ggthemes)
 
 setwd("~/hoffman/capacitance/capacitance_sensing/rscripts")
 
-quick_data <- read_csv("../csv_files/7-09_thor1_se.csv",
+quick_data <- read_csv("../csv_files/7-09_cal1_se.csv",
                        col_names = c("distance", "raw", "batch", "capacitance"))
-temp_data <- read_csv("../csv_files/7-09_thor1_se.csv",
+temp_data <- read_csv("../csv_files/7-12_5m9.csv",
                        col_names = c("batch", "Voltage", "time", "raw", "capacitance"))
 temp_data %>% 
+  filter(raw > 1000) %>% 
   group_by(batch) %>%
   summarize(avg_cap = mean(capacitance), 
             avg_raw = mean(raw),stdev =sd(capacitance), count = n(), 
+            time = mean(time),
             Voltage = as.factor(mean(Voltage))) %>%
   filter(count>1) %>% 
   ungroup() %>%
@@ -21,13 +23,13 @@ temp_data %>%
 
   # mutate(voltage = as.factor(((batch-1)%%2)*175)) %>% 
   # ggplot(aes(distance, avg_cap/10^6, color = voltage))+
-  ggplot(aes(batch, avg_cap, color = Voltage))+
+  ggplot(aes(time, avg_cap, color = Voltage))+
   geom_point()+
   # geom_errorbar(aes(ymin=(avg_cap-2*stdev), ymax=(avg_cap+2*stdev)), width=.2)+
-  labs(title = "Shearing and Calibration of Thorlabs Stack",
-       subtitle ="Shearing Closer, Single-Ended, D128",
-       caption ="Data File: 7-08_thor6_se.csv",
-       x = "Displacement (microns)",
+  labs(title = "Shearing and Calibrating on 5mm Stack",
+       subtitle ="Shearing Towards, Single-Ended, D215, Block Pressure",
+       caption ="Data File: 7-12_5m9.csv",
+       x = "Time (s)",
        y = "Capacitance (pF)")+
   # geom_smooth(method = "lm")+
   theme_minimal()

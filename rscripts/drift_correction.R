@@ -4,7 +4,7 @@ library(ggthemes)
 setwd("~/hoffman/capacitance/capacitance_sensing/rscripts")
 
 # I read in the data
-drift_data <- read_csv("../csv_files/7-08_thor4_se.csv",
+drift_data <- read_csv("../csv_files/7-09_control1_se.csv",
                        col_names = c("distance", "raw", "batch", "capacitance"))
 # max_voltage_batch <- c(2,4,6,8,10,12,14)
 max_voltage_batch <- c(4:6, 10:12, 16:18, 22:24, 28:30, 34:36, 40:42, 46:48)

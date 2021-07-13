@@ -7,11 +7,12 @@ ep <- 8.85 #pF/m
 area <- 600 #microns*m
 step_size <- 10 #microns
 # I read in the data
-cal_data <- read_csv("../csv_files/7-08_thor6_se.csv",
+cal_data <- read_csv("../csv_files/7-09_cal1_se.csv",
                        col_names = c("distance", "raw", "batch", "capacitance"))
-
+cal_data <- read_csv("../csv_files/7-09_cal1_se.csv",
+                      col_names = c("batch", "Voltage", "time", "raw", "capacitance"))
 clean_cal_data <- cal_data %>% 
-  group_by(distance, batch) %>%
+  group_by(batch) %>%
   summarize(avg_cap = mean(capacitance), stdev =sd(capacitance), count = n()) %>%
   filter(count>1) %>% 
   # filter(batch < 6) %>%
@@ -25,7 +26,7 @@ clean_cal_data <- cal_data %>%
 
 theory_area <- 1/coef(lm(theory_sep_per_area~sep, clean_cal_data))[["sep"]]
 theory_area
-separation_dist <- coef(lm(174*theory_sep_per_area~sep, 
+separation_dist <- coef(lm(theory_area*theory_sep_per_area~sep, 
                            clean_cal_data))[["(Intercept)"]]
 separation_dist
 
