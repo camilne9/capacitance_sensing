@@ -12,6 +12,7 @@ class Collect_Data():
     """
 
     def __init__(self, filename, readings_per_batch, max_voltage, trials, wait_time, pause, offset, voltages = False):
+        print("init collect")
         # create objects for the capacitance sensor and voltage source. The path
         # name is generally device specific.
         self.cap = serial.Serial("/dev/tty.usbserial-D30A2ZWX" , 9600)
@@ -149,22 +150,28 @@ class Collect_Data():
 # Tunable constants
 readings_per_batch = 100
 max_voltage = 175
-trials = 20
+trials = 6
 wait_time = 1
-offset = 128
+offset = 255
 voltages = [0, 25, 50, 75, 100, 125, 150, 175,
             150, 125, 100, 75, 50, 25,
             0, 25, 50, 75, 100, 125, 150, 175,
             150, 125, 100, 75, 50, 25]
             # 0, 25, 50, 75, 100, 125, 150, 175,
             # 150, 125, 100, 75, 50, 25, 0]
-filename = "csv_files/7-14_test2.csv"
+filename = "csv_files/7-14_test3.csv"
 
-def main(filename, readings_per_batch, max_voltage, trials, wait_time,
-            pause, offset, voltages=False):
-        Collect_Data(filename, readings_per_batch, max_voltage, trials,
-                wait_time, pause, offset, voltages)
+# def main(filename, readings_per_batch, max_voltage, trials, wait_time,
+#             pause, offset, voltages=False):
+#         print("here1")
+#         Collect_Data(filename, readings_per_batch, max_voltage, trials,
+#                 wait_time, pause, offset, voltages)
+#
+# main(filename=filename, readings_per_batch=readings_per_batch,
+#         max_voltage=max_voltage, trials=trials, wait_time=wait_time,
+#         pause=False, offset=225, voltages=False)
 
-main(filename=filename, readings_per_batch=readings_per_batch,
-        max_voltage=max_voltage, trials=trials, wait_time=wait_time,
-        pause=False, offset=225, voltages=False)
+if __name__ == "__main__":
+    print("inside if (collect)")
+    Collect_Data(filename, readings_per_batch, max_voltage, trials,
+                   wait_time, pause = False, offset=255, voltages = False)

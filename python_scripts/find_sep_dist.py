@@ -14,12 +14,13 @@ class Shear_Distance():
     Class for calculating shear distance, overlapping area, and initial
     separation distance.
     """
-    def __init__(self, filename, area, separation, plot):
+    def __init__(self, filename, area = None, separation = None, plot = True):
         """
         Executes appropriate methods in the correct order. Takes one required
         argument which must be the name of the csv file containing the relevant
         data and one optional argument to indicate if you want the data plotted.
         """
+        print("init analyze")
         self.ep = 8.85
         # creates variable "self.data" that is a list of lists containing
         # all of the information from the named csv file
@@ -162,7 +163,15 @@ class Shear_Distance():
         plt.scatter(np.array(data_array)[:, 0].tolist(), np.array(data_array)[:, -1].tolist())
         plt.show()
 
-def main(filename, area = None, separation = None, plot = True):
-    Shear_Distance(filename, area, separation, plot)
+# def main(filename, area = None, separation = None, plot = True):
+#     print("here2")
+#     Shear_Distance(filename, area, separation, plot)
+#
+# main("csv_files/7-13_5m8.csv", plot = False)
 
-main("csv_files/7-13_5m8.csv", plot = False)
+filename = "csv_files/7-13_5m8.csv"
+
+
+if __name__ == "__main__":
+    print("inside if (analyze)")
+    Shear_Distance(filename, plot = False)
