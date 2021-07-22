@@ -11,7 +11,7 @@ class Collect_Data():
     A class for data collection
     """
 
-    def __init__(self, filename, readings_per_batch, max_voltage, trials, wait_time, pause, offset, voltages = False):
+    def __init__(self, filename, readings_per_batch, max_voltage, trials, wait_time, pause, offset, voltages = False, ramp = None):
         print("init collect")
         # create objects for the capacitance sensor and voltage source. The path
         # name is generally device specific.
@@ -37,13 +37,13 @@ class Collect_Data():
         self.volt.write(b"O;")
         self.create_absolute_timestamp()
         # Collects data and saves it to csv
-        self.save_to_csv(self.collect_data(readings_per_batch, max_voltage, trials, wait_time, pause, offset, voltages), filename)
+        self.save_to_csv(self.collect_data(readings_per_batch, max_voltage, trials, wait_time, pause, offset, voltages, ramp), filename)
         # turns off voltage source
         self.volt.write(b"V0;")
         self.volt.write(b"F;")
         return
 
-    def collect_data(self, readings_per_batch, max_voltage, trials, wait_time, pause = False, offset = 255, voltages = False):
+    def collect_data(self, readings_per_batch, max_voltage, trials, wait_time, pause = False, offset = 255, voltages = False, ramp = None):
         """
         "readings_per_batch" is an int indicating how many distinct capacitance
             measurements are taken with each configuration
@@ -73,6 +73,7 @@ class Collect_Data():
         # we loop through the data collection process as many times as we require
         # for the given number of trials
         for trial in range(trials):
+            print(trial)
             # if we are toggling voltage, we set the voltage based on the parity
             # of the batch number
             if not voltages:
@@ -85,12 +86,31 @@ class Collect_Data():
                 else:
                     print("max voltage")
                     voltage = max_voltage
-                    self.volt.write(b"V%d;"%voltage)
+                    if max_voltage is not None:
+                        self.volt.write(b"V%d;"%voltage)
             # if we're ramping a set of voltages, we set the voltage according to
             # the set passed
             else:
-                voltage = voltages[trial]
-                print(voltage)
+                final_voltage = voltages[trial]
+                if ramp is not None:
+                    if trial == 0:
+                        current_voltage = 0
+                    else:
+                        current_voltage = voltages[trial-1]
+                    print("about to enter while loop")
+                    if trial > trials/2:
+                        while current_voltage > final_voltage:
+                            current_voltage += -1*ramp
+                            print(current_voltage)
+                            time.sleep(.01)
+                            self.volt.write(b"V%d;"%current_voltage)
+                    else:
+                        while current_voltage < final_voltage:
+                            current_voltage += ramp
+                            print(current_voltage)
+                            time.sleep(.01)
+                            self.volt.write(b"V%d;"%current_voltage)
+                voltage = final_voltage
                 self.volt.write(b"V%d;"%voltage)
 
             # brief pause as the stack shears and comes to rest
@@ -101,12 +121,13 @@ class Collect_Data():
             # collects as many measurements as indicated. Cleans the raw reading
             # so that it is just the int and also converts it to a capacitance.
             # All the information is stored in a list of lists
-            for interation in range(readings_per_batch):
-                self.cap.write(b"c;")
-                val = self.cap.readline()
-                raw = self.clean_val(val)
-                capacitance = self.convert_to_cap(raw, offset)
-                self.data_array.append([trial, voltage, time.time() - self.absolute_timestamp, raw, capacitance])
+            if voltage is not None:
+                for interation in range(readings_per_batch):
+                    self.cap.write(b"c;")
+                    val = self.cap.readline()
+                    raw = self.clean_val(val)
+                    capacitance = self.convert_to_cap(raw, offset)
+                    self.data_array.append([trial, voltage, time.time() - self.absolute_timestamp, raw, capacitance])
         return self.data_array
 
     def clean_val(self, val):
@@ -149,17 +170,26 @@ class Collect_Data():
 
 # Tunable constants
 readings_per_batch = 100
-max_voltage = 175
-trials = 6
-wait_time = 1
-offset = 255
+max_voltage = None
+trials = 20
+wait_time = .5
+offset = 128
 voltages = [0, 25, 50, 75, 100, 125, 150, 175,
             150, 125, 100, 75, 50, 25,
             0, 25, 50, 75, 100, 125, 150, 175,
             150, 125, 100, 75, 50, 25]
             # 0, 25, 50, 75, 100, 125, 150, 175,
             # 150, 125, 100, 75, 50, 25, 0]
-filename = "csv_files/7-14_test3.csv"
+# n = 5
+# m = 35
+# voltages = list([0]).append(list(range(0, (m+1)*n, n)[1:]))
+voltages1 = [n for n in range(0, 176) if n % 5 == 0]
+voltages1b = [n for n in range(1, 176) if n % 5 == 0]
+voltages2 = [175-n for n in range(1, 176) if n % 5 == 0]
+voltages = voltages1 + voltages2 + voltages1b + voltages2 + voltages1b + voltages2
+# + voltages1b + voltages2 + voltages1b + voltages2
+ramp = .1
+filename = "csv_files/7-22_ramp1_3x.csv"
 
 # def main(filename, readings_per_batch, max_voltage, trials, wait_time,
 #             pause, offset, voltages=False):
@@ -174,4 +204,4 @@ filename = "csv_files/7-14_test3.csv"
 if __name__ == "__main__":
     print("inside if (collect)")
     Collect_Data(filename, readings_per_batch, max_voltage, trials,
-                   wait_time, pause = False, offset=255, voltages = False)
+                   wait_time, pause = False, offset=200, voltages = voltages, ramp = ramp)
