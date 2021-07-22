@@ -7,3 +7,5 @@
 screenlog.0
 csv_files/graveyard
 testArduino.m
+python_scripts/__pycache__/
+python_scripts/find_sep_dist_old.py
