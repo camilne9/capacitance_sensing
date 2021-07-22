@@ -4,12 +4,13 @@ library(ggthemes)
 setwd("~/hoffman/capacitance/capacitance_sensing/rscripts")
 
 # I read in the data
-general_error <- read_csv("../csv_files/capacitance-micrometer.csv")
+general_error <- read_csv("../csv_files/7-16_cal9.csv",
+                          col_names = c("batch", "Voltage", "time", "raw", "capacitance"))
                           
 general_error <- general_error %>% 
-  mutate(distance = distance) %>% 
+  mutate(distance = 5*batch) %>% 
   group_by(distance) %>%
-  summarize(avg_cap = mean(capacitance)/(10^6), count = n()) %>%
+  summarize(avg_cap = mean(capacitance), count = n()) %>%
   filter(count>1) %>% 
   ungroup() %>% 
   mutate(reciprocal = 1/distance)

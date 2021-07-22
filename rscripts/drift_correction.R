@@ -4,10 +4,12 @@ library(ggthemes)
 setwd("~/hoffman/capacitance/capacitance_sensing/rscripts")
 
 # I read in the data
-drift_data <- read_csv("../csv_files/7-09_control1_se.csv",
+drift_data <- read_csv("../csv_files/7-13_5m3_se.csv",
                        col_names = c("distance", "raw", "batch", "capacitance"))
-# max_voltage_batch <- c(2,4,6,8,10,12,14)
-max_voltage_batch <- c(4:6, 10:12, 16:18, 22:24, 28:30, 34:36, 40:42, 46:48)
+drift_data <- read_csv("../csv_files/7-21_ramp_3x.csv",
+                      col_names = c("batch", "Voltage", "time", "raw", "capacitance"))
+max_voltage_batch <- c(2,4,6,8,10,12,14,16,18,20,22)
+# max_voltage_batch <- c(4:6, 10:12, 16:18, 22:24, 28:30, 34:36, 40:42, 46:48)
 # max_voltage_batch <- c(4:6, 10:12, 16:21, 25:27)
 # max_voltage_batch <- c(4:6, 13:18, 22:24, 28:30, 34:36)
 # max_voltage_batch = c(13:18, 25:30, 37:42, 49:54)
@@ -20,7 +22,7 @@ max_voltage <- 175
 time_interval <- 20
 
 clean_drift_data <- drift_data %>% 
-  group_by(distance, batch) %>%
+  group_by(batch) %>%
   summarize(avg_cap = mean(capacitance), stdev =sd(capacitance), count = n()) %>%
   # summarize(avg_cap = mean(capacitance), count = n(), Voltage = mean(Voltage)) %>%
   filter(count>1) %>% 
@@ -41,7 +43,7 @@ max_slope <- coef(lm(avg_cap~time,
 
 clean_drift_data %>% 
   mutate(drift_adjusted_capacitance = avg_cap-null_slope*time) %>% 
-  ggplot(aes(time, avg_cap, color = Voltage))+
+  ggplot(aes(time, drift_adjusted_capacitance, color = Voltage))+
   geom_point()+
   # geom_errorbar(aes(ymin=(avg_cap-2*stdev), ymax=(avg_cap+2*stdev)), width=.2)+
   labs(title = "Capacitance by Varying Voltage",
@@ -52,3 +54,4 @@ clean_drift_data %>%
        y = "Capacitance (pF)")+
   # geom_smooth(method = "lm")+
   theme_minimal()
+
