@@ -98,7 +98,7 @@ class Collect_Data():
                     else:
                         current_voltage = voltages[trial-1]
                     print("about to enter while loop")
-                    if trial > trials/2:
+                    if current_voltage > final_voltage:
                         while current_voltage > final_voltage:
                             current_voltage += -1*ramp
                             print(current_voltage)
@@ -170,7 +170,7 @@ class Collect_Data():
 
 # Tunable constants
 readings_per_batch = 100
-max_voltage = None
+max_voltage = 175
 trials = 20
 wait_time = .5
 offset = 128
@@ -186,10 +186,9 @@ voltages = [0, 25, 50, 75, 100, 125, 150, 175,
 voltages1 = [n for n in range(0, 176) if n % 5 == 0]
 voltages1b = [n for n in range(1, 176) if n % 5 == 0]
 voltages2 = [175-n for n in range(1, 176) if n % 5 == 0]
-voltages = voltages1 + voltages2 + voltages1b + voltages2 + voltages1b + voltages2
-# + voltages1b + voltages2 + voltages1b + voltages2
+voltages = voltages1 + voltages2 + voltages1b + voltages2 + voltages1b + voltages2 + voltages1b + voltages2 + voltages1b + voltages2
 ramp = .1
-filename = "csv_files/7-22_ramp1_3x.csv"
+filename = "csv_files/7-22_toggle1.csv"
 
 # def main(filename, readings_per_batch, max_voltage, trials, wait_time,
 #             pause, offset, voltages=False):
@@ -204,4 +203,4 @@ filename = "csv_files/7-22_ramp1_3x.csv"
 if __name__ == "__main__":
     print("inside if (collect)")
     Collect_Data(filename, readings_per_batch, max_voltage, trials,
-                   wait_time, pause = False, offset=200, voltages = voltages, ramp = ramp)
+                   wait_time, pause = False, offset=220, voltages = False, ramp = ramp)
