@@ -113,6 +113,9 @@ class Collect_Data():
                 voltage = final_voltage
                 self.volt.write(b"V%d;"%voltage)
 
+            if voltage == 0:
+                input("Press 'enter' when you're ready to proceed")
+
             # brief pause as the stack shears and comes to rest
             print("going to sleep")
             time.sleep(wait_time)
@@ -169,10 +172,10 @@ class Collect_Data():
 
 
 # Tunable constants
-readings_per_batch = 100
+readings_per_batch = 40
 max_voltage = 175
 trials = 20
-wait_time = .5
+wait_time = .1
 offset = 128
 voltages = [0, 25, 50, 75, 100, 125, 150, 175,
             150, 125, 100, 75, 50, 25,
@@ -186,9 +189,9 @@ voltages = [0, 25, 50, 75, 100, 125, 150, 175,
 voltages1 = [n for n in range(0, 176) if n % 5 == 0]
 voltages1b = [n for n in range(1, 176) if n % 5 == 0]
 voltages2 = [175-n for n in range(1, 176) if n % 5 == 0]
-voltages = voltages1 + voltages2 + voltages1b + voltages2 + voltages1b + voltages2 + voltages1b + voltages2 + voltages1b + voltages2
+voltages = voltages1 + voltages2 + voltages1b + voltages2 + voltages1b + voltages2 + voltages1b + voltages2 + voltages1b + voltages2 + voltages1b + voltages2
 ramp = .1
-filename = "csv_files/7-22_toggle1.csv"
+filename = "csv_files/7-26_5mm_ramp2.csv"
 
 # def main(filename, readings_per_batch, max_voltage, trials, wait_time,
 #             pause, offset, voltages=False):
@@ -203,4 +206,4 @@ filename = "csv_files/7-22_toggle1.csv"
 if __name__ == "__main__":
     print("inside if (collect)")
     Collect_Data(filename, readings_per_batch, max_voltage, trials,
-                   wait_time, pause = False, offset=220, voltages = False, ramp = ramp)
+                   wait_time, pause = False, offset=220, voltages = voltages, ramp = ramp)

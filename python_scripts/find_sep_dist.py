@@ -186,7 +186,7 @@ class Shear_Distance():
                                 "raw":np.array(data_array)[:, 3].tolist(),
                                 "capacitance":np.array(data_array)[:, 4].tolist()})
         fg = seaborn.FacetGrid(data=df, hue='Voltage', aspect=1.61)
-        fg.map(plt.scatter, 'time', 'capacitance').add_legend()
+        fg.map(plt.scatter, 'batch', 'capacitance').add_legend()
         plt.suptitle("Capacitance over Time", fontsize = 14)
         plt.title("D255 offset")
         plt.xlabel("Time (s)")
@@ -206,7 +206,7 @@ class Shear_Distance():
 #
 # main("csv_files/7-13_5m8.csv", plot = False)
 
-filename = "csv_files/7-19_thor3.csv"
+filename = "csv_files/7-26_cal1.csv"
 
 
 if __name__ == "__main__":
