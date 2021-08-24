@@ -1,11 +1,9 @@
 library(tidyverse)
 library(ggthemes)
 
-setwd("~/hoffman/capacitance/capacitance_sensing/rscripts")
+setwd("C:/Users/SphoPM/Documents/GitHub/capacitance_sensing/rscripts/")
 
-quick_data <- read_csv("../csv_files/7-09_cal1_se.csv",
-                       col_names = c("distance", "raw", "batch", "capacitance"))
-temp_data <- read_csv("../csv_files/7-26_cal1.csv",
+temp_data <- read_csv("../csv_files/7-30_3mmshear2.csv",
                        col_names = c("batch", "Voltage", "time", "raw", "capacitance"))
 temp_data %>% 
   filter(raw > 1000) %>% 
@@ -29,13 +27,11 @@ temp_data %>%
   # geom_errorbar(aes(ymin=(avg_cap-2*stdev), ymax=(avg_cap+2*stdev)), width=.2)+
   labs(title = "Shearing and Calibrating on 5mm Stack",
        subtitle ="Single-Ended, D220",
-       caption ="Data File: 7-23_cal5.csv",
-       x = "Displacement from Initial Separation (micron)",
+       caption ="Data File: 7_30_test1.csv",
+       x = "Time (s)",
        y = "Capacitance (pF)")+
   # geom_smooth(method = "lm")+
   theme_minimal()
-
-coef(lm(theory_sep~distance, temp))[["distance"]]
 
 
 
